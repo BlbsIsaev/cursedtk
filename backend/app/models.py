@@ -12,6 +12,7 @@ class User(Base):
     full_name = Column(String(100))
     hashed_password = Column(String(255), nullable=False)
     is_farmer = Column(Boolean, default=False)
+    is_admin = Column(Boolean, default=False)
     farm_name = Column(String(100))
     farm_description = Column(Text)
     location = Column(String(200))

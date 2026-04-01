@@ -19,9 +19,25 @@ def create_user(db: Session, user: schemas.UserCreate):
         full_name=user.full_name,
         hashed_password=hashed_password,
         is_farmer=user.is_farmer,
+        is_admin=False,
         farm_name=user.farm_name,
         location=user.location,
         phone=user.phone
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+def create_admin_user(db: Session, user: schemas.AdminCreate):
+    hashed_password = get_password_hash(user.password)
+    db_user = models.User(
+        email=user.email,
+        username=user.username,
+        full_name=user.full_name,
+        hashed_password=hashed_password,
+        is_farmer=False,
+        is_admin=True,
     )
     db.add(db_user)
     db.commit()
@@ -42,7 +58,6 @@ def create_product(db: Session, product: schemas.ProductCreate, farmer_id: int):
     return db_product
 
 def create_order(db: Session, order: schemas.OrderCreate, customer_id: int):
-    # Calculate total amount
     total = 0
     order_items = []
     
@@ -65,7 +80,6 @@ def create_order(db: Session, order: schemas.OrderCreate, customer_id: int):
     db.commit()
     db.refresh(db_order)
     
-    # Create order items
     for item_data in order_items:
         db_item = models.OrderItem(
             order_id=db_order.id,

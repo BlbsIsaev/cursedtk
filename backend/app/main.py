@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Header
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from datetime import timedelta
@@ -12,10 +12,9 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Farmers Market Platform", version="1.0.0")
 
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify exact origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -82,7 +81,44 @@ def get_farmers(db: Session = Depends(get_db)):
     farmers = db.query(models.User).filter(models.User.is_farmer == True).all()
     return farmers
 
-# Health check endpoint
+@app.post("/admin/bootstrap", response_model=schemas.User)
+def bootstrap_admin(
+    admin: schemas.AdminCreate,
+    x_admin_secret: str = Header(None),
+    db: Session = Depends(get_db),
+):
+    if x_admin_secret != settings.ADMIN_BOOTSTRAP_SECRET:
+        raise HTTPException(status_code=403, detail="Invalid bootstrap secret")
+    existing_admin = db.query(models.User).filter(models.User.is_admin == True).first()
+    if existing_admin:
+        raise HTTPException(status_code=400, detail="Admin already exists")
+    if crud.get_user_by_email(db, email=admin.email):
+        raise HTTPException(status_code=400, detail="Email already registered")
+    if crud.get_user_by_username(db, username=admin.username):
+        raise HTTPException(status_code=400, detail="Username already taken")
+    return crud.create_admin_user(db=db, user=admin)
+
+@app.get("/admin/users", response_model=List[schemas.User])
+def admin_list_users(
+    current_user: models.User = Depends(auth.require_admin),
+    db: Session = Depends(get_db)
+):
+    return db.query(models.User).all()
+
+@app.get("/admin/products", response_model=List[schemas.Product])
+def admin_list_products(
+    current_user: models.User = Depends(auth.require_admin),
+    db: Session = Depends(get_db)
+):
+    return db.query(models.Product).all()
+
+@app.get("/admin/orders", response_model=List[schemas.OrderAdmin])
+def admin_list_orders(
+    current_user: models.User = Depends(auth.require_admin),
+    db: Session = Depends(get_db)
+):
+    return db.query(models.Order).all()
+
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}

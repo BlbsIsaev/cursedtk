@@ -15,26 +15,36 @@
                 <i class="fas fa-leaf"></i>
                 <h1>Рынок Фермеров</h1>
             </div>
-            <div class="nav-links">
-                <a href="#" onclick="showPage('home')">Главная</a>
-                <a href="#" onclick="showPage('products')">Продукты</a>
-                <a href="#" onclick="showPage('farmers')">Фермеры</a>
-                <a href="#" onclick="showPage('about')">О нас</a>
-                <div id="auth-buttons">
-                    <button class="btn btn-outline" onclick="showPage('login')">Вход</button>
-                    <button class="btn btn-primary" onclick="showPage('register')">Регистрация</button>
-                </div>
-                <div id="user-menu" class="hidden">
-                    <span id="username-display"></span>
-                    <button class="btn btn-primary" onclick="showPage('dashboard')">Кабинет</button>
-                    <button class="btn btn-outline" onclick="logout()">Выход</button>
-                </div>
+<div class="nav-links">
+    <div class="nav-left">
+        <a href="#" onclick="showPage('home')">Главная</a>
+        <a href="#" onclick="showPage('products')">Продукты</a>
+        <a href="#" onclick="showPage('farmers')">Фермеры</a>
+        <a href="#" onclick="showPage('about')">О нас</a>
+    </div>
+
+    <div class="nav-right">
+        <div id="auth-buttons">
+            <button class="btn btn-outline" onclick="showPage('login')">Вход</button>
+            <button class="btn btn-primary" onclick="showPage('register')">Регистрация</button>
+        </div>
+
+        <div id="user-menu" class="hidden">
+            <span id="username-display"></span>
+            <button class="btn btn-outline" onclick="showPage('cart')">Корзина</button>
+            <button class="btn btn-outline" onclick="showPage('orders')">Мои заказы</button>
+            <button class="btn btn-primary" onclick="showPage('dashboard')">Кабинет</button>
+            <button id="admin-btn" class="btn btn-outline hidden" onclick="showPage('admin')">Админка</button>
+            <button class="btn btn-outline" onclick="logout()">Выход</button>
+        </div>
+    </div>
+</div>
+
             </div>
         </div>
     </nav>
 
     <div class="container">
-        <!-- Home Page -->
         <div id="home-page" class="page active">
             <div class="hero">
                 <h2>Свежие экопродукты от локальных фермеров</h2>
@@ -63,7 +73,6 @@
             </div>
         </div>
 
-        <!-- Login Page -->
         <div id="login-page" class="page hidden">
             <div class="auth-container">
                 <h2>Вход в систему</h2>
@@ -84,7 +93,6 @@
             </div>
         </div>
 
-        <!-- Registration Page -->
         <div id="register-page" class="page hidden">
             <div class="auth-container">
                 <h2>Регистрация</h2>
@@ -131,7 +139,6 @@
             </div>
         </div>
 
-        <!-- Products Page -->
         <div id="products-page" class="page hidden">
             <h2>Наши продукты</h2>
             <div class="filters">
@@ -148,11 +155,11 @@
                 </button>
             </div>
             <div id="products-list" class="products-grid">
-                <!-- Продукты будут загружены динамически -->
+
             </div>
         </div>
 
-        <!-- Add Product Page -->
+
         <div id="add-product-page" class="page hidden">
             <div class="auth-container">
                 <h2>Добавить продукт</h2>
@@ -196,34 +203,119 @@
             </div>
         </div>
 
-        <!-- Farmers Page -->
+
         <div id="farmers-page" class="page hidden">
             <h2>Наши фермеры</h2>
             <div id="farmers-list" class="farmers-grid">
-                <!-- Фермеры будут загружены динамически -->
             </div>
         </div>
 
-        <!-- Dashboard Page -->
+
         <div id="dashboard-page" class="page hidden">
             <h2>Личный кабинет</h2>
             <div class="dashboard">
                 <div class="user-info">
                     <h3>Информация о профиле</h3>
                     <div id="user-info-content">
-                        <!-- Информация о пользователе -->
+
                     </div>
                 </div>
                 <div class="user-products">
                     <h3>Мои продукты</h3>
                     <div id="user-products-list">
-                        <!-- Продукты пользователя -->
+
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- About Page -->
+
+        <div id="cart-page" class="page hidden">
+            <h2>Корзина</h2>
+            <div id="cart-empty" class="auth-container hidden">
+                <h2>Корзина пуста</h2>
+                <p>Добавьте товары из каталога.</p>
+                <button class="btn btn-primary btn-block" onclick="showPage('products')">Вернуться к товарам</button>
+            </div>
+
+            <div id="cart-filled" class="hidden">
+                <div class="filters">
+                    <input id="cart-search" type="text" placeholder="Поиск по корзине..." style="flex:1; padding:0.75rem; border:1px solid #ddd; border-radius:5px;">
+                    <button class="btn btn-outline" onclick="clearCart()">Очистить корзину</button>
+                </div>
+
+                <div id="cart-items" class="products-grid"></div>
+
+                <div class="auth-container" style="margin-top: 2rem;">
+                    <h3>Итого</h3>
+                    <p><strong>Сумма:</strong> <span id="cart-total">0</span> ₽</p>
+                    <button class="btn btn-primary btn-block" onclick="showPage('checkout')">Оформить заказ</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="checkout-page" class="page hidden">
+            <div class="auth-container">
+                <h2>Оформление заказа</h2>
+
+                <form id="checkout-form">
+                    <div class="form-group">
+                        <label for="delivery-address">Адрес доставки</label>
+                        <textarea id="delivery-address" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="delivery-type">Способ доставки</label>
+                        <select id="delivery-type" required>
+                            <option value="courier">Курьер</option>
+                            <option value="pickup">Самовывоз</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="agree-terms" required>
+                        <label for="agree-terms">Согласен с условиями оформления заказа</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Подтвердить заказ</button>
+                    <button type="button" class="btn btn-outline btn-block" onclick="showPage('cart')" style="margin-top: 10px;">Назад в корзину</button>
+                </form>
+            </div>
+        </div>
+
+
+        <div id="orders-page" class="page hidden">
+            <h2>Мои заказы</h2>
+
+            <div class="filters">
+                <input id="orders-search" type="text" placeholder="Поиск..." style="flex:1; padding:0.75rem; border:1px solid #ddd; border-radius:5px;">
+                <button class="btn btn-outline" onclick="showPage('home')">На главную</button>
+            </div>
+
+            <div id="orders-list" class="farmers-grid"></div>
+        </div>
+
+
+        <div id="admin-page" class="page hidden">
+            <h2>Панель администратора</h2>
+
+            <div class="dashboard">
+                <div class="user-info">
+                    <h3>Пользователи</h3>
+                    <div id="admin-users" class="farmers-grid"></div>
+                </div>
+                <div class="user-products">
+                    <h3>Товары</h3>
+                    <div id="admin-products" class="products-grid"></div>
+                    <h3 style="margin-top: 2rem;">Заказы</h3>
+                    <div id="admin-orders" class="farmers-grid"></div>
+                </div>
+            </div>
+        </div>
+
+
+
         <div id="about-page" class="page hidden">
             <h2>О нашем сообществе</h2>
             <div class="about-content">
@@ -241,7 +333,7 @@
 
     <footer>
         <div class="container">
-            <p>© 2024 Рынок Фермеров. Все права защищены.</p>
+            <p>© 2026 Рынок Фермеров. Все права защищены.</p>
             <p>Контакты: info@farmersmarket.ru | +7 (999) 123-45-67</p>
         </div>
     </footer>

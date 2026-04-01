@@ -1,4 +1,3 @@
-// Загрузка продуктов
 async function loadProducts(category = '') {
     try {
         const url = category ? 
@@ -22,7 +21,7 @@ async function loadProducts(category = '') {
     }
 }
 
-// Создание карточки продукта
+
 function createProductCard(product) {
     const card = document.createElement('div');
     card.className = 'product-card';
@@ -41,11 +40,22 @@ function createProductCard(product) {
             <p><small>Продавец: ${product.farmer_id}</small></p>
         </div>
     `;
+
+    const addBtn = document.createElement('button');
+    addBtn.className = 'btn btn-primary btn-block';
+    addBtn.textContent = 'Добавить в корзину';
+    addBtn.addEventListener('click', () => {
+        addToCart(product);
+        if (document.getElementById('cart-page')?.classList.contains('active')) {
+            renderCart();
+        }
+    });
+    card.querySelector('.product-info')?.appendChild(addBtn);
     
     return card;
 }
 
-// Получение иконки для категории продукта
+
 function getProductIcon(category) {
     const icons = {
         'овощи': 'fa-carrot',
@@ -58,7 +68,7 @@ function getProductIcon(category) {
     return icons[category] || 'fa-shopping-basket';
 }
 
-// Загрузка фермеров
+
 async function loadFarmers() {
     try {
         const response = await fetch(`${API_BASE_URL}/farmers`);
@@ -92,17 +102,17 @@ async function loadFarmers() {
     }
 }
 
-// Просмотр продуктов фермера
+
 function viewFarmerProducts(farmerId) {
-    // Реализация просмотра продуктов конкретного фермера
+
     alert(`Просмотр продуктов фермера ID: ${farmerId}`);
 }
 
-// Загрузка дашборда
+
 async function loadDashboard() {
     if (!currentUser) return;
     
-    // Загрузка информации о пользователе
+
     const userInfoContent = document.getElementById('user-info-content');
     userInfoContent.innerHTML = `
         <p><strong>Имя пользователя:</strong> ${currentUser.username}</p>
@@ -115,7 +125,7 @@ async function loadDashboard() {
         ` : '<p><strong>Статус:</strong> Покупатель</p>'}
     `;
     
-    // Загрузка продуктов фермера
+
     if (currentUser.is_farmer) {
         try {
             const response = await fetch(`${API_BASE_URL}/farmers/${currentUser.id}/products`, {
@@ -150,7 +160,7 @@ async function loadDashboard() {
     }
 }
 
-// Добавление нового продукта
+
 document.getElementById('add-product-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -191,3 +201,83 @@ document.getElementById('add-product-form')?.addEventListener('submit', async (e
         alert('Ошибка соединения с сервером');
     }
 });
+
+async function loadAdmin() {
+    if (!currentUser || !currentUser.is_admin) return;
+
+    const usersBox = document.getElementById('admin-users');
+    const productsBox = document.getElementById('admin-products');
+    const ordersBox = document.getElementById('admin-orders');
+
+    if (!usersBox || !productsBox || !ordersBox) return;
+
+    try {
+        const [usersResp, productsResp, ordersResp] = await Promise.all([
+            fetch(`${API_BASE_URL}/admin/users`, { headers: { 'Authorization': `Bearer ${token}` } }),
+            fetch(`${API_BASE_URL}/admin/products`, { headers: { 'Authorization': `Bearer ${token}` } }),
+            fetch(`${API_BASE_URL}/admin/orders`, { headers: { 'Authorization': `Bearer ${token}` } })
+        ]);
+
+        if (usersResp.ok) {
+            const users = await usersResp.json();
+            usersBox.innerHTML = '';
+            users.forEach(u => {
+                const card = document.createElement('div');
+                card.className = 'farmer-card';
+                card.innerHTML = `
+                    <h3>${u.username}</h3>
+                    <p>${u.email}</p>
+                    <p>Роль: ${u.is_admin ? 'Админ' : (u.is_farmer ? 'Фермер' : 'Покупатель')}</p>
+                `;
+                usersBox.appendChild(card);
+            });
+        } else {
+            usersBox.innerHTML = '<p>Ошибка загрузки пользователей</p>';
+        }
+
+        if (productsResp.ok) {
+            const products = await productsResp.json();
+            productsBox.innerHTML = '';
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-info">
+                        <h3>${p.name}</h3>
+                        <p>${p.description || ''}</p>
+                        <div class="product-price">${p.price} ₽/${p.unit}</div>
+                        <p>Фермер ID: ${p.farmer_id}</p>
+                    </div>
+                `;
+                productsBox.appendChild(card);
+            });
+        } else {
+            productsBox.innerHTML = '<p>Ошибка загрузки товаров</p>';
+        }
+
+        if (ordersResp.ok) {
+            const orders = await ordersResp.json();
+            ordersBox.innerHTML = '';
+            orders.forEach(o => {
+                const card = document.createElement('div');
+                card.className = 'farmer-card';
+                const items = (o.items || []).map(i => `#${i.product_id} × ${i.quantity}`).join('<br>') || '—';
+                card.innerHTML = `
+                    <h3>Заказ #${o.id}</h3>
+                    <p>Покупатель ID: ${o.customer_id}</p>
+                    <p>Статус: ${o.status}</p>
+                    <p>Сумма: ${o.total_amount} ₽</p>
+                    <p><strong>Товары:</strong><br>${items}</p>
+                `;
+                ordersBox.appendChild(card);
+            });
+        } else {
+            ordersBox.innerHTML = '<p>Ошибка загрузки заказов</p>';
+        }
+    } catch (error) {
+        console.error('Admin load error:', error);
+        usersBox.innerHTML = '<p>Ошибка соединения с сервером</p>';
+        productsBox.innerHTML = '<p>Ошибка соединения с сервером</p>';
+        ordersBox.innerHTML = '<p>Ошибка соединения с сервером</p>';
+    }
+}

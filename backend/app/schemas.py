@@ -14,9 +14,16 @@ class UserCreate(UserBase):
     location: Optional[str] = None
     phone: Optional[str] = None
 
+class AdminCreate(BaseModel):
+    email: EmailStr
+    username: str
+    full_name: Optional[str] = None
+    password: str
+
 class User(UserBase):
     id: int
     is_farmer: bool
+    is_admin: bool
     farm_name: Optional[str] = None
     created_at: datetime
     
@@ -55,6 +62,13 @@ class OrderItemBase(BaseModel):
     product_id: int
     quantity: int
 
+class OrderItem(OrderItemBase):
+    id: int
+    price_at_time: float
+
+    class Config:
+        from_attributes = True
+
 class OrderCreate(BaseModel):
     items: List[OrderItemBase]
     delivery_address: str
@@ -66,5 +80,11 @@ class Order(BaseModel):
     status: str
     created_at: datetime
     
+    class Config:
+        from_attributes = True
+
+class OrderAdmin(Order):
+    items: List[OrderItem] = []
+
     class Config:
         from_attributes = True
