@@ -10,7 +10,8 @@ from app.config import settings
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Farmers Market Platform", version="1.0.0")
+app = FastAPI(title="Farmers Market Platform", version="1.0.0", root_path="/api")
+
 
 app.add_middleware(
     CORSMiddleware,

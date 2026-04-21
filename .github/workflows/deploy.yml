@@ -1,0 +1,70 @@
+name: CI/CD Farmers Market
+
+on:
+  push:
+    branches: [ "develop" ] # Сработает при пуше в главную ветку
+
+jobs:
+  # --- ПЕРВЫЙ ЭТАП: СБОРКА И ПУШ ОБРАЗА ---
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Backend Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          # Образ будет называться: твой_логин/course-fastapi:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/cursedtk:latest
+
+  # --- ВТОРОЙ ЭТАП: ДЕПЛОЙ НА СЕРВЕР ---
+  deploy:
+    needs: build-and-push # Ждем, пока соберется образ
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 1. Копируем фронтенд в папку static на сервере
+      - name: Copy frontend files
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "core_files/frontend/*"
+          target: "/home/devops/course/static"
+          strip_components: 2 # Отрезает 'core_files/frontend', кладет только файлы
+
+      # 2. Обновляем docker-compose.yaml на сервере
+      - name: Update docker-compose file
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "docker-compose.yaml"
+          target: "/home/devops/course"
+
+      # 3. Перезапускаем контейнеры через SSH
+      - name: Execute remote commands via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ~/course
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker image prune -f
