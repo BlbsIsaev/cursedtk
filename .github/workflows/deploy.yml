@@ -22,7 +22,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./Dockerfile
+          file: ./course/Dockerfile
           push: true
           # Образ будет называться: твой_логин/course-fastapi:latest
           tags: ${{ secrets.DOCKER_USERNAME }}/cursedtk:latest
