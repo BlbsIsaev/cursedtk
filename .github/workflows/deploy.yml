@@ -2,7 +2,7 @@ name: CI/CD Farmers Market
 
 on:
   push:
-    branches: [ "develop" ] # Сработает при пуше в главную ветку
+    branches: [ "develop" ]
 
 jobs:
   # --- ПЕРВЫЙ ЭТАП: СБОРКА И ПУШ ОБРАЗА ---
@@ -22,31 +22,42 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./course/Dockerfile
+          # Dockerfile теперь в корне репозитория
+          file: ./Dockerfile
           push: true
-          # Образ будет называться: твой_логин/course-fastapi:latest
           tags: ${{ secrets.DOCKER_USERNAME }}/cursedtk:latest
 
   # --- ВТОРОЙ ЭТАП: ДЕПЛОЙ НА СЕРВЕР ---
   deploy:
-    needs: build-and-push # Ждем, пока соберется образ
+    needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 1. Копируем фронтенд в папку static на сервере
+      # 1. Обновляем фронтенд (копируем из папки frontend/ репозитория в /static на сервере)
       - name: Copy frontend files
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: "core_files/frontend/*"
+          source: "frontend/*"
           target: "/home/devops/course/static"
-          strip_components: 2 # Отрезает 'core_files/frontend', кладет только файлы
+          strip_components: 1 # Отрезает 'frontend/', файлы ложатся прямо в static/
 
-      # 2. Обновляем docker-compose.yaml на сервере
+      # 2. Обновляем конфиг Nginx
+      - name: Update Nginx config
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "nginx/nginx.conf"
+          target: "/home/devops/course/nginx"
+          strip_components: 1
+
+      # 3. Обновляем docker-compose.yaml в корне ~/course
       - name: Update docker-compose file
         uses: appleboy/scp-action@master
         with:
@@ -56,7 +67,7 @@ jobs:
           source: "docker-compose.yaml"
           target: "/home/devops/course"
 
-      # 3. Перезапускаем контейнеры через SSH
+      # 4. Перезапуск контейнеров
       - name: Execute remote commands via SSH
         uses: appleboy/ssh-action@master
         with:

@@ -1,48 +1,59 @@
-services:
-  db:
-    image: mysql:8.4
-    container_name: farmers-market-db
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: farmers_market
-      MYSQL_ROOT_PASSWORD: 12345678
-    volumes:
-      - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p12345678"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 20s
+version: '3.8'
 
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: farmers-market-backend
-    restart: unless-stopped
+services:
+  fastapi-app:
+    build: .
+    container_name: prod_app
+    restart: always
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONBUFFERED=1
+      - DATABASE_URL=mysql+mysqlconnector://root:12345678@db:3306/farmers_market
     depends_on:
       db:
         condition: service_healthy
-    environment:
-      DATABASE_URL: mysql+mysqlconnector://root:12345678@db:3306/farmers_market
-      SECRET_KEY: your-secret-key-change-in-production
-      ALGORITHM: HS256
-      ACCESS_TOKEN_EXPIRE_MINUTES: 30
-      ADMIN_BOOTSTRAP_SECRET: change-me
-    ports:
-      - "8000:8000"
+    networks:
+      - app-network
 
-  frontend:
-    image: nginx:1.27-alpine
-    container_name: farmers-market-frontend
-    restart: unless-stopped
-    depends_on:
-      - backend
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
     ports:
-      - "8080:80"
+      - "80:80"
+      - "443:443"
     volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - fastapi-app
+    restart: always
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: farmers_market
+      MYSQL_USER: course_user
+      MYSQL_PASSWORD: course_pass
+      MYSQL_ROOT_PASSWORD: "12345678"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p12345678"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app-network
+
 
 volumes:
   mysql_data:
+
+networks:
+  app-network:
+    driver: bridge
