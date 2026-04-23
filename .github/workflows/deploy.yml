@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           source: "frontend/*"
-          target: "/home/devops/course/core_files/static"
+          target: "/home/devops/course/core_files/frontend"
           strip_components: 1 # Отрезает 'frontend/', файлы ложатся прямо в static/
 
       # 2. Обновляем конфиг Nginx
