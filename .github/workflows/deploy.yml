@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           source: "frontend/*"
-          target: "/home/devops/course/static"
+          target: "/home/devops/course/core_files/static"
           strip_components: 1 # Отрезает 'frontend/', файлы ложатся прямо в static/
 
       # 2. Обновляем конфиг Nginx
@@ -54,7 +54,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           source: "nginx/nginx.conf"
-          target: "/home/devops/course/nginx"
+          target: "/home/devops/course/core_files/nginx"
           strip_components: 1
 
       # 3. Обновляем docker-compose.yaml в корне ~/course
@@ -65,7 +65,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           source: "docker-compose.yaml"
-          target: "/home/devops/course"
+          target: "/home/devops/course/core_files"
 
       # 4. Перезапуск контейнеров
       - name: Execute remote commands via SSH
@@ -75,7 +75,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd ~/course
+            cd ~/course/core_files
             docker compose pull
             docker compose up -d --remove-orphans
             docker image prune -f
