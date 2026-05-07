@@ -1,91 +1,99 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Рынок Фермеров - Экологичные продукты</title>
+    <title>Рынок Фермеров - Свежие экопродукты</title>
+    <!-- Google Fonts included in styles.css -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
-            <div class="logo">
+            <a href="#" class="logo" onclick="showPage('home')">
                 <i class="fas fa-leaf"></i>
                 <h1>Рынок Фермеров</h1>
-            </div>
-<div class="nav-links">
-    <div class="nav-left">
-        <a href="#" onclick="showPage('home')">Главная</a>
-        <a href="#" onclick="showPage('products')">Продукты</a>
-        <a href="#" onclick="showPage('farmers')">Фермеры</a>
-        <a href="#" onclick="showPage('about')">О нас</a>
-    </div>
+            </a>
+            <div class="nav-links">
+                <div class="nav-left">
+                    <a href="#" onclick="showPage('home')">Главная</a>
+                    <a href="#" onclick="showPage('products')">Продукты</a>
+                    <a href="#" onclick="showPage('farmers')">Фермеры</a>
+                    <a href="#" onclick="showPage('about')">О нас</a>
+                </div>
 
-    <div class="nav-right">
-        <div id="auth-buttons">
-            <button class="btn btn-outline" onclick="showPage('login')">Вход</button>
-            <button class="btn btn-primary" onclick="showPage('register')">Регистрация</button>
-        </div>
+                <div class="nav-right">
+                    <div id="auth-buttons">
+                        <button class="btn btn-outline" onclick="showPage('login')">Вход</button>
+                        <button class="btn btn-primary" onclick="showPage('register')">Регистрация</button>
+                    </div>
 
-        <div id="user-menu" class="hidden">
-            <span id="username-display"></span>
-            <button class="btn btn-outline" onclick="showPage('cart')">Корзина</button>
-            <button class="btn btn-outline" onclick="showPage('orders')">Мои заказы</button>
-            <button class="btn btn-primary" onclick="showPage('dashboard')">Кабинет</button>
-            <button id="admin-btn" class="btn btn-outline hidden" onclick="showPage('admin')">Админка</button>
-            <button class="btn btn-outline" onclick="logout()">Выход</button>
-        </div>
-    </div>
-</div>
-
+                    <div id="user-menu" class="hidden">
+                        <span id="username-display"></span>
+                        <button class="btn btn-outline" onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i> Корзина</button>
+                        <button class="btn btn-outline" onclick="showPage('orders')">Мои заказы</button>
+                        <button class="btn btn-primary" onclick="showPage('dashboard')"><i class="fas fa-user"></i> Кабинет</button>
+                        <button id="admin-btn" class="btn btn-outline hidden" onclick="showPage('admin')">Админка</button>
+                        <button class="btn btn-outline" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Выход</button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="container">
+    <main class="container">
+        <!-- Главная страница -->
         <div id="home-page" class="page active">
             <div class="hero">
-                <h2>Свежие экопродукты от локальных фермеров</h2>
-                <p>Поддержите местных производителей и наслаждайтесь свежими, органическими продуктами</p>
-                <button class="btn btn-primary btn-large" onclick="showPage('products')">
-                    Смотреть продукты
-                </button>
+                <div class="hero-content">
+                    <h2>Свежие экопродукты от локальных фермеров</h2>
+                    <p>Поддержите местных производителей и наслаждайтесь органическими продуктами с доставкой прямо к вашему столу.</p>
+                    <button class="btn btn-primary btn-large" onclick="showPage('products')">
+                        <i class="fas fa-shopping-basket"></i> В каталог
+                    </button>
+                </div>
             </div>
             
             <div class="features">
                 <div class="feature-card">
-                    <i class="fas fa-seedling"></i>
+                    <div class="feature-icon-wrapper">
+                        <i class="fas fa-seedling"></i>
+                    </div>
                     <h3>Органические</h3>
-                    <p>Все продукты выращены без химических удобрений</p>
+                    <p class="text-muted">Все продукты выращены в гармонии с природой, без использования химических удобрений.</p>
                 </div>
                 <div class="feature-card">
-                    <i class="fas fa-truck"></i>
+                    <div class="feature-icon-wrapper">
+                        <i class="fas fa-truck"></i>
+                    </div>
                     <h3>Локальные</h3>
-                    <p>Доставка от фермеров в вашем регионе</p>
+                    <p class="text-muted">Свежайшая продукция и быстрая доставка напрямую от фермеров вашего региона.</p>
                 </div>
                 <div class="feature-card">
-                    <i class="fas fa-handshake"></i>
+                    <div class="feature-icon-wrapper">
+                        <i class="fas fa-handshake"></i>
+                    </div>
                     <h3>Прямые заказы</h3>
-                    <p>Покупайте напрямую у производителей</p>
+                    <p class="text-muted">Покупайте напрямую у производителей, поддерживая локальную экономику.</p>
                 </div>
             </div>
         </div>
 
+        <!-- Страница входа -->
         <div id="login-page" class="page hidden">
             <div class="auth-container">
-                <h2>Вход в систему</h2>
+                <h2>С возвращением!</h2>
                 <form id="login-form">
                     <div class="form-group">
                         <label for="login-username">Имя пользователя</label>
-                        <input type="text" id="login-username" required>
+                        <input type="text" id="login-username" class="form-control" required placeholder="Введите ваш логин">
                     </div>
                     <div class="form-group">
                         <label for="login-password">Пароль</label>
-                        <input type="password" id="login-password" required>
+                        <input type="password" id="login-password" class="form-control" required placeholder="Введите пароль">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Войти</button>
+                    <button type="submit" class="btn btn-primary btn-block">Войти в аккаунт</button>
                 </form>
                 <p class="auth-link">
                     Нет аккаунта? <a href="#" onclick="showPage('register')">Зарегистрируйтесь</a>
@@ -93,42 +101,43 @@
             </div>
         </div>
 
+        <!-- Страница регистрации -->
         <div id="register-page" class="page hidden">
-            <div class="auth-container">
-                <h2>Регистрация</h2>
+            <div class="auth-container" style="max-width: 600px;">
+                <h2>Создать аккаунт</h2>
                 <form id="register-form">
                     <div class="form-group">
                         <label for="register-email">Email</label>
-                        <input type="email" id="register-email" required>
+                        <input type="email" id="register-email" class="form-control" required placeholder="your@email.com">
                     </div>
                     <div class="form-group">
                         <label for="register-username">Имя пользователя</label>
-                        <input type="text" id="register-username" required>
+                        <input type="text" id="register-username" class="form-control" required placeholder="Ваш логин">
                     </div>
                     <div class="form-group">
                         <label for="register-fullname">Полное имя</label>
-                        <input type="text" id="register-fullname">
+                        <input type="text" id="register-fullname" class="form-control" placeholder="Иван Иванов">
                     </div>
                     <div class="form-group">
                         <label for="register-password">Пароль</label>
-                        <input type="password" id="register-password" required>
+                        <input type="password" id="register-password" class="form-control" required placeholder="Минимум 6 символов">
                     </div>
                     <div class="form-group">
                         <label for="register-phone">Телефон</label>
-                        <input type="tel" id="register-phone">
+                        <input type="tel" id="register-phone" class="form-control" placeholder="+7 (999) 000-00-00">
                     </div>
-                    <div class="form-group checkbox-group">
+                    <div class="form-group checkbox-group" style="margin: 1.5rem 0; padding: 1rem; background: var(--surface-alt); border-radius: var(--border-radius-sm);">
                         <input type="checkbox" id="register-is-farmer">
-                        <label for="register-is-farmer">Я фермер/производитель</label>
+                        <label for="register-is-farmer">Я фермер/производитель (хочу продавать свои продукты)</label>
                     </div>
                     <div id="farmer-fields" class="hidden">
                         <div class="form-group">
                             <label for="register-farm-name">Название фермы</label>
-                            <input type="text" id="register-farm-name">
+                            <input type="text" id="register-farm-name" class="form-control" placeholder="Эко-Ферма 'Урожай'">
                         </div>
                         <div class="form-group">
                             <label for="register-location">Местоположение</label>
-                            <input type="text" id="register-location">
+                            <input type="text" id="register-location" class="form-control" placeholder="Московская область">
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
@@ -139,204 +148,264 @@
             </div>
         </div>
 
+        <!-- Каталог продуктов -->
         <div id="products-page" class="page hidden">
-            <h2>Наши продукты</h2>
-            <div class="filters">
-                <select id="category-filter">
-                    <option value="">Все категории</option>
-                    <option value="овощи">Овощи</option>
-                    <option value="фрукты">Фрукты</option>
-                    <option value="молочные">Молочные продукты</option>
-                    <option value="мясо">Мясо</option>
-                </select>
-                <button class="btn btn-outline" onclick="loadProducts()">Применить фильтры</button>
-                <button id="add-product-btn" class="btn btn-primary hidden" onclick="showPage('add-product')">
-                    <i class="fas fa-plus"></i> Добавить продукт
-                </button>
+            <div class="products-header">
+                <h2 class="section-title">Каталог продуктов</h2>
+                <div class="filters">
+                    <i class="fas fa-filter text-muted"></i>
+                    <select id="category-filter">
+                        <option value="">Все категории</option>
+                        <option value="овощи">Овощи</option>
+                        <option value="фрукты">Фрукты</option>
+                        <option value="молочные">Молочные продукты</option>
+                        <option value="мясо">Мясо</option>
+                        <option value="зерновые">Зерновые</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="loadProducts()">Применить</button>
+                    <button id="add-product-btn" class="btn btn-outline hidden" onclick="showPage('add-product')">
+                        <i class="fas fa-plus"></i> Добавить
+                    </button>
+                </div>
             </div>
             <div id="products-list" class="products-grid">
-
+                <!-- Товары будут загружены сюда -->
             </div>
         </div>
 
-
+        <!-- Добавление продукта -->
         <div id="add-product-page" class="page hidden">
-            <div class="auth-container">
-                <h2>Добавить продукт</h2>
+            <div class="auth-container" style="max-width: 600px;">
+                <h2>Добавить новый продукт</h2>
                 <form id="add-product-form">
                     <div class="form-group">
-                        <label for="product-name">Название</label>
-                        <input type="text" id="product-name" required>
+                        <label for="product-name">Название продукта</label>
+                        <input type="text" id="product-name" class="form-control" required placeholder="Например: Свежие помидоры">
                     </div>
                     <div class="form-group">
                         <label for="product-description">Описание</label>
-                        <textarea id="product-description" rows="3"></textarea>
+                        <textarea id="product-description" class="form-control" rows="4" placeholder="Опишите ваш продукт подробно..."></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="product-price">Цена</label>
-                        <input type="number" id="product-price" step="0.01" required>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="product-price">Цена (₽)</label>
+                            <input type="number" id="product-price" class="form-control" step="0.01" required placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-category">Категория</label>
+                            <select id="product-category" class="form-control" required>
+                                <option value="овощи">Овощи</option>
+                                <option value="фрукты">Фрукты</option>
+                                <option value="молочные">Молочные продукты</option>
+                                <option value="мясо">Мясо</option>
+                                <option value="зерновые">Зерновые</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="product-category">Категория</label>
-                        <select id="product-category" required>
-                            <option value="овощи">Овощи</option>
-                            <option value="фрукты">Фрукты</option>
-                            <option value="молочные">Молочные продукты</option>
-                            <option value="мясо">Мясо</option>
-                            <option value="зерновые">Зерновые</option>
-                        </select>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="product-quantity">Доступное количество</label>
+                            <input type="number" id="product-quantity" class="form-control" required placeholder="Например: 10">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-unit">Единица измерения</label>
+                            <input type="text" id="product-unit" class="form-control" value="кг" placeholder="кг, шт, л">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="product-quantity">Количество</label>
-                        <input type="number" id="product-quantity" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="product-unit">Единица измерения</label>
-                        <input type="text" id="product-unit" value="кг">
-                    </div>
-                    <div class="form-group checkbox-group">
+                    <div class="form-group checkbox-group" style="margin: 1.5rem 0; padding: 1rem; background: var(--surface-alt); border-radius: var(--border-radius-sm);">
                         <input type="checkbox" id="product-organic">
-                        <label for="product-organic">Органический сертификат</label>
+                        <label for="product-organic">Органический сертификат (Эко-продукт)</label>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Добавить продукт</button>
+                    <button type="submit" class="btn btn-primary btn-block">Опубликовать продукт</button>
+                    <button type="button" class="btn btn-outline btn-block" style="margin-top: 1rem;" onclick="showPage('dashboard')">Отмена</button>
                 </form>
             </div>
         </div>
 
-
+        <!-- Список фермеров -->
         <div id="farmers-page" class="page hidden">
-            <h2>Наши фермеры</h2>
+            <h2 class="section-title" style="margin-bottom: 2rem;">Наши фермеры</h2>
             <div id="farmers-list" class="farmers-grid">
+                <!-- Фермеры будут загружены сюда -->
             </div>
         </div>
 
-
+        <!-- Личный кабинет -->
         <div id="dashboard-page" class="page hidden">
-            <h2>Личный кабинет</h2>
+            <h2 class="section-title" style="margin-bottom: 2rem;">Личный кабинет</h2>
             <div class="dashboard">
                 <div class="user-info">
-                    <h3>Информация о профиле</h3>
-                    <div id="user-info-content">
-
+                    <div class="dashboard-header">
+                        <h3>Информация о профиле</h3>
+                    </div>
+                    <div id="user-info-content" style="padding-top: 1rem;">
+                        <!-- Данные пользователя -->
                     </div>
                 </div>
                 <div class="user-products">
-                    <h3>Мои продукты</h3>
-                    <div id="user-products-list">
-
+                    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>Мои продукты</h3>
+                        <button class="btn btn-primary" onclick="showPage('add-product')"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <div id="user-products-list" class="products-grid" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); padding-top: 1rem;">
+                        <!-- Продукты пользователя -->
                     </div>
                 </div>
             </div>
         </div>
 
-
+        <!-- Корзина -->
         <div id="cart-page" class="page hidden">
-            <h2>Корзина</h2>
-            <div id="cart-empty" class="auth-container hidden">
-                <h2>Корзина пуста</h2>
-                <p>Добавьте товары из каталога.</p>
-                <button class="btn btn-primary btn-block" onclick="showPage('products')">Вернуться к товарам</button>
+            <h2 class="section-title" style="margin-bottom: 2rem;">Ваша корзина</h2>
+            
+            <div id="cart-empty" class="auth-container hidden text-center">
+                <div style="font-size: 4rem; color: var(--border-color); margin-bottom: 1rem;">
+                    <i class="fas fa-shopping-basket"></i>
+                </div>
+                <h3>Корзина пуста</h3>
+                <p class="text-muted" style="margin-bottom: 2rem;">Похоже, вы еще ничего не добавили. Перейдите в каталог, чтобы выбрать свежие продукты.</p>
+                <button class="btn btn-primary" onclick="showPage('products')">Перейти в каталог</button>
             </div>
 
             <div id="cart-filled" class="hidden">
-                <div class="filters">
-                    <input id="cart-search" type="text" placeholder="Поиск по корзине..." style="flex:1; padding:0.75rem; border:1px solid #ddd; border-radius:5px;">
-                    <button class="btn btn-outline" onclick="clearCart()">Очистить корзину</button>
+                <div class="filters" style="margin-bottom: 2rem;">
+                    <i class="fas fa-search text-muted"></i>
+                    <input id="cart-search" type="text" placeholder="Поиск по корзине..." style="flex:1;">
+                    <button class="btn btn-outline" onclick="clearCart()"><i class="fas fa-trash"></i> Очистить</button>
                 </div>
 
                 <div id="cart-items" class="products-grid"></div>
 
-                <div class="auth-container" style="margin-top: 2rem;">
-                    <h3>Итого</h3>
-                    <p><strong>Сумма:</strong> <span id="cart-total">0</span> ₽</p>
-                    <button class="btn btn-primary btn-block" onclick="showPage('checkout')">Оформить заказ</button>
+                <div class="auth-container" style="margin-top: 3rem; text-align: center;">
+                    <h3 style="color: var(--text-muted); font-size: 1rem; text-transform: uppercase;">Итого к оплате</h3>
+                    <p style="font-size: 3rem; font-family: var(--font-heading); font-weight: 700; color: var(--primary-dark); margin: 1rem 0;">
+                        <span id="cart-total">0</span> ₽
+                    </p>
+                    <button class="btn btn-primary btn-block btn-large" onclick="showPage('checkout')">Оформить заказ <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
         </div>
 
-
+        <!-- Оформление заказа -->
         <div id="checkout-page" class="page hidden">
-            <div class="auth-container">
+            <div class="auth-container" style="max-width: 600px;">
                 <h2>Оформление заказа</h2>
-
                 <form id="checkout-form">
                     <div class="form-group">
                         <label for="delivery-address">Адрес доставки</label>
-                        <textarea id="delivery-address" rows="3" required></textarea>
+                        <textarea id="delivery-address" class="form-control" rows="3" required placeholder="Город, улица, дом, квартира..."></textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="delivery-type">Способ доставки</label>
-                        <select id="delivery-type" required>
-                            <option value="courier">Курьер</option>
-                            <option value="pickup">Самовывоз</option>
+                        <select id="delivery-type" class="form-control" required>
+                            <option value="courier">Курьерская доставка до двери</option>
+                            <option value="pickup">Самовывоз от фермера</option>
                         </select>
                     </div>
 
-                    <div class="form-group checkbox-group">
+                    <div class="form-group checkbox-group" style="margin: 1.5rem 0;">
                         <input type="checkbox" id="agree-terms" required>
-                        <label for="agree-terms">Согласен с условиями оформления заказа</label>
+                        <label for="agree-terms">Я согласен с условиями обработки персональных данных</label>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-block">Подтвердить заказ</button>
-                    <button type="button" class="btn btn-outline btn-block" onclick="showPage('cart')" style="margin-top: 10px;">Назад в корзину</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-large">Подтвердить заказ</button>
+                    <button type="button" class="btn btn-outline btn-block" style="margin-top: 1rem;" onclick="showPage('cart')"><i class="fas fa-arrow-left"></i> Назад в корзину</button>
                 </form>
             </div>
         </div>
 
-
+        <!-- Мои заказы -->
         <div id="orders-page" class="page hidden">
-            <h2>Мои заказы</h2>
-
-            <div class="filters">
-                <input id="orders-search" type="text" placeholder="Поиск..." style="flex:1; padding:0.75rem; border:1px solid #ddd; border-radius:5px;">
-                <button class="btn btn-outline" onclick="showPage('home')">На главную</button>
+            <div class="products-header">
+                <h2 class="section-title">История заказов</h2>
+                <div class="filters">
+                    <i class="fas fa-search text-muted"></i>
+                    <input id="orders-search" type="text" placeholder="Поиск заказов..." style="flex:1;">
+                </div>
             </div>
 
-            <div id="orders-list" class="farmers-grid"></div>
+            <div id="orders-list" class="farmers-grid" style="grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); gap: 1.5rem;">
+                <!-- Заказы -->
+            </div>
         </div>
 
-
+        <!-- Админка -->
         <div id="admin-page" class="page hidden">
-            <h2>Панель администратора</h2>
-
-            <div class="dashboard">
+            <h2 class="section-title" style="margin-bottom: 2rem;">Панель администратора</h2>
+            <div class="dashboard" style="grid-template-columns: 1fr;">
                 <div class="user-info">
-                    <h3>Пользователи</h3>
-                    <div id="admin-users" class="farmers-grid"></div>
+                    <div class="dashboard-header"><h3>Пользователи платформы</h3></div>
+                    <div id="admin-users" class="farmers-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); padding-top: 1rem;"></div>
                 </div>
-                <div class="user-products">
-                    <h3>Товары</h3>
-                    <div id="admin-products" class="products-grid"></div>
-                    <h3 style="margin-top: 2rem;">Заказы</h3>
-                    <div id="admin-orders" class="farmers-grid"></div>
+                <div class="user-products" style="margin-top: 2rem;">
+                    <div class="dashboard-header"><h3>Все товары</h3></div>
+                    <div id="admin-products" class="products-grid" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); padding-top: 1rem;"></div>
+                    
+                    <div class="dashboard-header" style="margin-top: 3rem;"><h3>Все заказы</h3></div>
+                    <div id="admin-orders" class="farmers-grid" style="grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); padding-top: 1rem;"></div>
                 </div>
             </div>
         </div>
 
-
-
+        <!-- О нас -->
         <div id="about-page" class="page hidden">
-            <h2>О нашем сообществе</h2>
-            <div class="about-content">
-                <p>Мы создаем прямое соединение между локальными фермерами и потребителями, которые ценят свежие, экологически чистые продукты.</p>
-                <h3>Наши принципы:</h3>
-                <ul>
-                    <li>Поддержка местных производителей</li>
-                    <li>Прозрачность происхождения продуктов</li>
-                    <li>Экологичное земледелие</li>
-                    <li>Справедливые цены</li>
+            <div class="auth-container" style="max-width: 800px; text-align: left;">
+                <h2 style="text-align: left; margin-bottom: 1rem;">О нашем сообществе</h2>
+                <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem;">Мы создаем прямое соединение между локальными фермерами и потребителями, которые ценят свежие, экологически чистые продукты.</p>
+                
+                <h3 style="margin-bottom: 1rem; color: var(--primary-dark);">Наши принципы:</h3>
+                <ul style="list-style-type: none; padding: 0; display: grid; gap: 1rem;">
+                    <li style="display: flex; align-items: center; gap: 12px; background: var(--surface-alt); padding: 12px 20px; border-radius: var(--border-radius-sm);">
+                        <i class="fas fa-check-circle text-primary" style="color: var(--primary-color);"></i>
+                        <strong>Поддержка местных производителей</strong>
+                    </li>
+                    <li style="display: flex; align-items: center; gap: 12px; background: var(--surface-alt); padding: 12px 20px; border-radius: var(--border-radius-sm);">
+                        <i class="fas fa-check-circle text-primary" style="color: var(--primary-color);"></i>
+                        <strong>Прозрачность происхождения продуктов</strong>
+                    </li>
+                    <li style="display: flex; align-items: center; gap: 12px; background: var(--surface-alt); padding: 12px 20px; border-radius: var(--border-radius-sm);">
+                        <i class="fas fa-check-circle text-primary" style="color: var(--primary-color);"></i>
+                        <strong>Экологичное земледелие без химии</strong>
+                    </li>
+                    <li style="display: flex; align-items: center; gap: 12px; background: var(--surface-alt); padding: 12px 20px; border-radius: var(--border-radius-sm);">
+                        <i class="fas fa-check-circle text-primary" style="color: var(--primary-color);"></i>
+                        <strong>Справедливые цены для обеих сторон</strong>
+                    </li>
                 </ul>
             </div>
         </div>
-    </div>
+    </main>
 
     <footer>
         <div class="container">
-            <p>© 2026 Рынок Фермеров. Все права защищены.</p>
-            <p>Контакты: info@farmersmarket.ru | +7 (999) 123-45-67</p>
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h2><i class="fas fa-leaf"></i> Рынок Фермеров</h2>
+                    <p>Платформа для объединения локальных производителей эко-продуктов и осознанных потребителей.</p>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 1rem;">Навигация</h3>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+                        <li><a href="#" onclick="showPage('home')" style="color: #a0aba1; text-decoration: none;">Главная</a></li>
+                        <li><a href="#" onclick="showPage('products')" style="color: #a0aba1; text-decoration: none;">Каталог</a></li>
+                        <li><a href="#" onclick="showPage('farmers')" style="color: #a0aba1; text-decoration: none;">Наши фермеры</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 1rem;">Контакты</h3>
+                    <p style="color: #a0aba1; margin-bottom: 8px;"><i class="fas fa-envelope"></i> info@farmersmarket.ru</p>
+                    <p style="color: #a0aba1;"><i class="fas fa-phone"></i> +7 (999) 123-45-67</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Рынок Фермеров. Все права защищены.</p>
+            </div>
         </div>
     </footer>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="toast-container"></div>
 
     <script src="auth.js"></script>
     <script src="app.js"></script>

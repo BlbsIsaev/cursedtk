@@ -26,18 +26,31 @@ function createProductCard(product) {
     const card = document.createElement('div');
     card.className = 'product-card';
     
+    const categoryImages = {
+        'овощи': 'https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?auto=format&fit=crop&w=400&q=80',
+        'фрукты': 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=400&q=80',
+        'молочные': 'https://images.unsplash.com/photo-1628088062854-d1870b4553da?auto=format&fit=crop&w=400&q=80',
+        'мясо': 'https://images.unsplash.com/photo-1607623814075-e51df1bdc18f?auto=format&fit=crop&w=400&q=80',
+        'зерновые': 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=400&q=80',
+        'default': 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=400&q=80'
+    };
+    
+    const imageUrl = categoryImages[product.category] || categoryImages['default'];
+    
     card.innerHTML = `
-        <div class="product-image">
-            <i class="fas ${getProductIcon(product.category)}"></i>
+        <div class="product-image" style="background-image: url('${imageUrl}')">
+            ${product.organic_certified ? '<div class="product-badge"><i class="fas fa-leaf text-primary"></i> Эко</div>' : ''}
         </div>
         <div class="product-info">
+            <div class="product-category">${product.category || 'Продукт'}</div>
             <h3>${product.name}</h3>
-            <p>${product.description || ''}</p>
-            <div class="product-price">${product.price} ₽/${product.unit}</div>
-            <p>В наличии: ${product.stock_quantity} ${product.unit}</p>
-            ${product.organic_certified ? 
-                '<span class="organic-badge">Органический</span>' : ''}
-            <p><small>Продавец: ${product.farmer_id}</small></p>
+            <p class="text-muted" style="margin-bottom: 1rem; font-size: 0.9rem; flex-grow: 1;">${product.description || ''}</p>
+            <div class="product-farmer"><i class="fas fa-user-circle"></i> Фермер #${product.farmer_id}</div>
+            
+            <div class="product-price-row">
+                <div class="product-price">${product.price} ₽ <span class="product-unit">/ ${product.unit}</span></div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">В наличии: ${product.stock_quantity}</div>
+            </div>
         </div>
     `;
 
@@ -77,18 +90,29 @@ async function loadFarmers() {
         const farmersList = document.getElementById('farmers-list');
         farmersList.innerHTML = '';
         
-        farmers.forEach(farmer => {
+        const farmerImages = [
+            'https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=150&q=80',
+            'https://images.unsplash.com/photo-1595859702882-9f6974fb1661?auto=format&fit=crop&w=150&q=80',
+            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+            'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80'
+        ];
+
+        farmers.forEach((farmer, index) => {
             const farmerCard = document.createElement('div');
             farmerCard.className = 'farmer-card';
             
+            const avatarUrl = farmerImages[index % farmerImages.length];
+            
             farmerCard.innerHTML = `
-                <i class="fas fa-user-tie fa-3x" style="color: #40916c; margin-bottom: 1rem;"></i>
+                <div class="farmer-avatar" style="background-image: url('${avatarUrl}'); background-size: cover; background-position: center; border: none;"></div>
                 <h3>${farmer.farm_name || farmer.full_name || farmer.username}</h3>
-                <p>${farmer.farm_description || 'Локальный фермер'}</p>
-                <p><i class="fas fa-map-marker-alt"></i> ${farmer.location || 'Не указано'}</p>
-                <p><i class="fas fa-envelope"></i> ${farmer.email}</p>
-                ${farmer.phone ? `<p><i class="fas fa-phone"></i> ${farmer.phone}</p>` : ''}
-                <button class="btn btn-outline" onclick="viewFarmerProducts(${farmer.id})">
+                <p class="text-muted" style="margin-bottom: 1rem;">${farmer.farm_description || 'Локальный производитель эко-продуктов'}</p>
+                <div class="farmer-location"><i class="fas fa-map-marker-alt" style="color: var(--primary-color);"></i> ${farmer.location || 'Местоположение не указано'}</div>
+                <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+                    <div><i class="fas fa-envelope"></i> ${farmer.email}</div>
+                    ${farmer.phone ? `<div><i class="fas fa-phone"></i> ${farmer.phone}</div>` : ''}
+                </div>
+                <button class="btn btn-outline btn-block" onclick="viewFarmerProducts(${farmer.id})">
                     Смотреть продукты
                 </button>
             `;
@@ -104,8 +128,11 @@ async function loadFarmers() {
 
 
 function viewFarmerProducts(farmerId) {
-
-    alert(`Просмотр продуктов фермера ID: ${farmerId}`);
+    if (typeof showToast === 'function') {
+        showToast(`Просмотр продуктов фермера ID: ${farmerId} (в разработке)`, 'success');
+    } else {
+        alert(`Просмотр продуктов фермера ID: ${farmerId}`);
+    }
 }
 
 
@@ -165,7 +192,8 @@ document.getElementById('add-product-form')?.addEventListener('submit', async (e
     e.preventDefault();
     
     if (!currentUser || !currentUser.is_farmer) {
-        alert('Только фермеры могут добавлять продукты');
+        if (typeof showToast === 'function') showToast('Только фермеры могут добавлять продукты', 'error');
+        else alert('Только фермеры могут добавлять продукты');
         return;
     }
     
@@ -190,15 +218,18 @@ document.getElementById('add-product-form')?.addEventListener('submit', async (e
         });
         
         if (response.ok) {
-            alert('Продукт успешно добавлен!');
+            if (typeof showToast === 'function') showToast('Продукт успешно добавлен!');
+            else alert('Продукт успешно добавлен!');
             showPage('products');
         } else {
             const error = await response.json();
-            alert(`Ошибка: ${error.detail}`);
+            if (typeof showToast === 'function') showToast(`Ошибка: ${error.detail}`, 'error');
+            else alert(`Ошибка: ${error.detail}`);
         }
     } catch (error) {
         console.error('Error adding product:', error);
-        alert('Ошибка соединения с сервером');
+        if (typeof showToast === 'function') showToast('Ошибка соединения с сервером', 'error');
+        else alert('Ошибка соединения с сервером');
     }
 });
 

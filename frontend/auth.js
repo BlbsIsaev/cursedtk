@@ -3,10 +3,30 @@ const API_BASE_URL = '/api';
 let currentUser = null;
 let token = localStorage.getItem('token');
 
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+    toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 10);
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+    }, 3000);
+}
+
 
 function showPage(pageId) {
     if (pageId === 'admin' && (!currentUser || !currentUser.is_admin)) {
-        alert('Требуются права администратора');
+        showToast('Требуются права администратора', 'error');
         return;
     }
 
@@ -97,15 +117,15 @@ document.getElementById('register-form')?.addEventListener('submit', async (e) =
         });
         
         if (response.ok) {
-            alert('Регистрация успешна! Теперь вы можете войти.');
+            showToast('Регистрация успешна! Теперь вы можете войти.');
             showPage('login');
         } else {
             const error = await response.json();
-            alert(`Ошибка регистрации: ${error.detail}`);
+            showToast(`Ошибка регистрации: ${error.detail}`, 'error');
         }
     } catch (error) {
         console.error('Registration error:', error);
-        alert('Ошибка соединения с сервером');
+        showToast('Ошибка соединения с сервером', 'error');
     }
 });
 
@@ -132,12 +152,13 @@ document.getElementById('login-form')?.addEventListener('submit', async (e) => {
             await fetchCurrentUser();
             
             showPage('home');
+            showToast('Успешный вход в систему!');
         } else {
-            alert('Неверное имя пользователя или пароль');
+            showToast('Неверное имя пользователя или пароль', 'error');
         }
     } catch (error) {
         console.error('Login error:', error);
-        alert('Ошибка соединения с сервером');
+        showToast('Ошибка соединения с сервером', 'error');
     }
 });
 
@@ -167,6 +188,7 @@ function logout() {
     token = null;
     localStorage.removeItem('token');
     showPage('home');
+    showToast('Вы вышли из системы');
 }
 
 
@@ -213,7 +235,7 @@ function addToCart(product) {
     if (existing) existing.quantity += 1;
     else cart.push({ product_id: product.id, name: product.name, price: product.price, unit: product.unit, quantity: 1 });
     saveCart(cart);
-    alert('Товар добавлен в корзину!');
+    showToast('Товар добавлен в корзину!');
 }
 
 function clearCart() { saveCart([]); renderCart(); }
@@ -309,14 +331,14 @@ document.getElementById('checkout-form')?.addEventListener('submit', async (e) =
     e.preventDefault();
 
     if (!token) {
-        alert('Войдите в аккаунт для оформления заказа');
+        showToast('Войдите в аккаунт для оформления заказа', 'error');
         showPage('login');
         return;
     }
 
     const cart = getCart();
     if (cart.length === 0) {
-        alert('Корзина пуста');
+        showToast('Корзина пуста', 'error');
         showPage('cart');
         return;
     }
@@ -340,7 +362,7 @@ document.getElementById('checkout-form')?.addEventListener('submit', async (e) =
 
         if (!resp.ok) {
             const err = await resp.json().catch(() => ({}));
-            alert(`Ошибка оформления: ${err.detail || 'неизвестно'}`);
+            showToast(`Ошибка оформления: ${err.detail || 'неизвестно'}`, 'error');
             return;
         }
 
@@ -350,11 +372,11 @@ document.getElementById('checkout-form')?.addEventListener('submit', async (e) =
         localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
 
         saveCart([]);
-        alert('Заказ оформлен!');
+        showToast('Заказ оформлен!');
         showPage('orders');
     } catch (error) {
         console.error(error);
-        alert('Ошибка соединения с сервером');
+        showToast('Ошибка соединения с сервером', 'error');
     }
 });
 
