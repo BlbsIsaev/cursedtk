@@ -35,7 +35,7 @@ function createProductCard(product) {
         'default': 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=400&q=80'
     };
     
-    const imageUrl = categoryImages[product.category] || categoryImages['default'];
+    const imageUrl = product.image_url || categoryImages[product.category] || categoryImages['default'];
     
     card.innerHTML = `
         <div class="product-image" style="background-image: url('${imageUrl}')">
@@ -202,6 +202,7 @@ document.getElementById('add-product-form')?.addEventListener('submit', async (e
         description: document.getElementById('product-description').value,
         price: parseFloat(document.getElementById('product-price').value),
         category: document.getElementById('product-category').value,
+        image_url: document.getElementById('product-image-url')?.value || null,
         organic_certified: document.getElementById('product-organic').checked,
         stock_quantity: parseInt(document.getElementById('product-quantity').value),
         unit: document.getElementById('product-unit').value
