@@ -31,11 +31,11 @@
 
                     <div id="user-menu" class="hidden">
                         <span id="username-display"></span>
-                        <button class="btn btn-outline" onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i> Корзина</button>
-                        <button class="btn btn-outline" onclick="showPage('orders')">Мои заказы</button>
-                        <button class="btn btn-primary" onclick="showPage('dashboard')"><i class="fas fa-user"></i> Кабинет</button>
-                        <button id="admin-btn" class="btn btn-outline hidden" onclick="showPage('admin')">Админка</button>
-                        <button class="btn btn-outline" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Выход</button>
+                        <button class="btn btn-outline icon-btn" onclick="showPage('cart')" title="Корзина"><i class="fas fa-shopping-cart"></i></button>
+                        <button class="btn btn-outline icon-btn" onclick="showPage('orders')" title="Мои заказы"><i class="fas fa-box"></i></button>
+                        <button class="btn btn-primary icon-btn" onclick="showPage('dashboard')" title="Кабинет"><i class="fas fa-user"></i></button>
+                        <button id="admin-btn" class="btn btn-outline icon-btn hidden" onclick="showPage('admin')" title="Админка"><i class="fas fa-cog"></i></button>
+                        <button class="btn btn-outline icon-btn" onclick="logout()" title="Выход"><i class="fas fa-sign-out-alt"></i></button>
                     </div>
                 </div>
             </div>
@@ -55,6 +55,57 @@
                 </div>
             </div>
             
+            <div class="section-heading">
+                <h2>Популярные категории</h2>
+                <p>Выбирайте из лучшего, что предлагает природа</p>
+            </div>
+            
+            <div class="categories-preview">
+                <a href="#" class="category-card" onclick="showPage('products'); document.getElementById('category-filter').value='овощи'; loadProducts();">
+                    <div class="category-icon"><i class="fas fa-carrot"></i></div>
+                    <h3>Овощи</h3>
+                </a>
+                <a href="#" class="category-card" onclick="showPage('products'); document.getElementById('category-filter').value='фрукты'; loadProducts();">
+                    <div class="category-icon"><i class="fas fa-apple-alt"></i></div>
+                    <h3>Фрукты</h3>
+                </a>
+                <a href="#" class="category-card" onclick="showPage('products'); document.getElementById('category-filter').value='молочные'; loadProducts();">
+                    <div class="category-icon"><i class="fas fa-cheese"></i></div>
+                    <h3>Молочные продукты</h3>
+                </a>
+                <a href="#" class="category-card" onclick="showPage('products'); document.getElementById('category-filter').value='мясо'; loadProducts();">
+                    <div class="category-icon"><i class="fas fa-drumstick-bite"></i></div>
+                    <h3>Мясо</h3>
+                </a>
+            </div>
+
+            <div class="how-it-works">
+                <div class="section-heading">
+                    <h2>Как это работает</h2>
+                    <p>Путь от фермы до вашего стола в 3 простых шага</p>
+                </div>
+                <div class="steps-container">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <h3>Выбираете продукты</h3>
+                        <p>Изучайте каталог свежих сезонных продуктов от проверенных фермеров.</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <h3>Фермер собирает заказ</h3>
+                        <p>Ваш заказ готовится специально для вас, сохраняя максимум свежести.</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <h3>Быстрая доставка</h3>
+                        <p>Мы бережно доставляем органические продукты прямо к вашей двери.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-heading">
+                <h2>Наши преимущества</h2>
+            </div>
             <div class="features">
                 <div class="feature-card">
                     <div class="feature-icon-wrapper">
@@ -350,29 +401,38 @@
 
         <!-- О нас -->
         <div id="about-page" class="page hidden">
-            <div class="auth-container" style="max-width: 800px; text-align: left;">
-                <h2 style="text-align: left; margin-bottom: 1rem;">О нашем сообществе</h2>
-                <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem;">Мы создаем прямое соединение между локальными фермерами и потребителями, которые ценят свежие, экологически чистые продукты.</p>
-                
-                <h3 style="margin-bottom: 1rem; color: var(--primary-dark);">Наши принципы:</h3>
-                <ul style="list-style-type: none; padding: 0; display: grid; gap: 1rem;">
-                    <li style="display: flex; align-items: center; gap: 12px; background: var(--surface-alt); padding: 12px 20px; border-radius: var(--border-radius-sm);">
-                        <i class="fas fa-check-circle text-primary" style="color: var(--primary-color);"></i>
-                        <strong>Поддержка местных производителей</strong>
-                    </li>
-                    <li style="display: flex; align-items: center; gap: 12px; background: var(--surface-alt); padding: 12px 20px; border-radius: var(--border-radius-sm);">
-                        <i class="fas fa-check-circle text-primary" style="color: var(--primary-color);"></i>
-                        <strong>Прозрачность происхождения продуктов</strong>
-                    </li>
-                    <li style="display: flex; align-items: center; gap: 12px; background: var(--surface-alt); padding: 12px 20px; border-radius: var(--border-radius-sm);">
-                        <i class="fas fa-check-circle text-primary" style="color: var(--primary-color);"></i>
-                        <strong>Экологичное земледелие без химии</strong>
-                    </li>
-                    <li style="display: flex; align-items: center; gap: 12px; background: var(--surface-alt); padding: 12px 20px; border-radius: var(--border-radius-sm);">
-                        <i class="fas fa-check-circle text-primary" style="color: var(--primary-color);"></i>
-                        <strong>Справедливые цены для обеих сторон</strong>
-                    </li>
-                </ul>
+            <div class="about-split">
+                <div>
+                    <h2 class="section-title" style="margin-bottom: 1.5rem;">О нашем сообществе</h2>
+                    <p style="font-size: 1.15rem; color: var(--text-muted); margin-bottom: 2rem; line-height: 1.8;">Мы создаем прямое соединение между локальными фермерами и потребителями, которые ценят свежие, экологически чистые продукты. Наша платформа позволяет вам питаться вкуснее, полезнее и осознаннее.</p>
+                    
+                    <h3 style="margin-bottom: 1.5rem; color: var(--primary-dark); font-size: 1.5rem;">Наши принципы:</h3>
+                    <ul style="list-style-type: none; padding: 0; display: grid; gap: 1rem;">
+                        <li style="display: flex; align-items: center; gap: 16px; background: var(--surface-color); padding: 16px 24px; border-radius: var(--border-radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                            <i class="fas fa-check-circle" style="color: var(--primary-color); font-size: 1.5rem;"></i>
+                            <strong style="font-size: 1.1rem; color: var(--text-main);">Поддержка местных производителей</strong>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 16px; background: var(--surface-color); padding: 16px 24px; border-radius: var(--border-radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                            <i class="fas fa-check-circle" style="color: var(--primary-color); font-size: 1.5rem;"></i>
+                            <strong style="font-size: 1.1rem; color: var(--text-main);">Прозрачность происхождения продуктов</strong>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 16px; background: var(--surface-color); padding: 16px 24px; border-radius: var(--border-radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                            <i class="fas fa-check-circle" style="color: var(--primary-color); font-size: 1.5rem;"></i>
+                            <strong style="font-size: 1.1rem; color: var(--text-main);">Экологичное земледелие без химии</strong>
+                        </li>
+                    </ul>
+                </div>
+                <div class="about-image">
+                    <img src="images/about_bg.png" alt="Органическая ферма на рассвете">
+                </div>
+            </div>
+            
+            <div style="margin-top: 5rem; text-align: center;">
+                <div class="about-image" style="max-width: 800px; margin: 0 auto 3rem;">
+                    <img src="images/produce.png" alt="Свежие фермерские продукты">
+                </div>
+                <h3 style="font-size: 2rem; color: var(--primary-dark); margin-bottom: 1rem;">Готовы попробовать настоящее?</h3>
+                <button class="btn btn-primary btn-large" onclick="showPage('products')">Перейти в каталог</button>
             </div>
         </div>
     </main>
