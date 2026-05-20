@@ -3,7 +3,6 @@ version: '3.8'
 services:
   fastapi-app:
     build: .
-    container_name: prod_app
     restart: always
     environment:
       - PYTHONPATH=/app
@@ -33,7 +32,6 @@ services:
 
   db:
     image: mysql:8.0
-    container_name: mysql-db
     restart: always
     environment:
       MYSQL_DATABASE: farmers_market

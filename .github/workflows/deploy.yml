@@ -5,77 +5,69 @@ on:
     branches: [ "develop" ]
 
 jobs:
-  # --- ПЕРВЫЙ ЭТАП: СБОРКА И ПУШ ОБРАЗА ---
   build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Backend Image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
-          # Dockerfile теперь в корне репозитория
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/cursedtk:latest
 
-  # --- ВТОРОЙ ЭТАП: ДЕПЛОЙ НА СЕРВЕР ---
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 1. Обновляем фронтенд (копируем из папки frontend/ репозитория в /static на сервере)
       - name: Copy frontend files
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           source: "frontend/*"
-          target: "/home/devops/course/core_files/frontend"
-          strip_components: 1 # Отрезает 'frontend/', файлы ложатся прямо в static/
+          target: "~/curse/cursedtk"
+          strip_components: 1
 
-      # 2. Обновляем конфиг Nginx
       - name: Update Nginx config
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           source: "nginx/nginx.conf"
-          target: "/home/devops/course/core_files/nginx"
-          strip_components: 1
+          target: "~/curse/cursedtk"
 
-      # 3. Обновляем docker-compose.yaml в корне ~/course
       - name: Update docker-compose file
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           source: "docker-compose.yaml"
-          target: "/home/devops/course/core_files"
+          target: "~/curse/cursedtk"
 
-      # 4. Перезапуск контейнеров
       - name: Execute remote commands via SSH
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd ~/course/core_files
+            cd ~/curse/cursedtk
             docker compose pull
             docker compose up -d --force-recreate --remove-orphans
             docker image prune -f
